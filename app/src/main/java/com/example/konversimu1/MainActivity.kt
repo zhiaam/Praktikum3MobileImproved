@@ -1,7 +1,11 @@
 package com.example.konversimu1
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.example.konversimu1.databinding.ActivityMainBinding
 import java.text.NumberFormat
 import java.util.*
@@ -18,6 +22,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.calculateButton.setOnClickListener { calculateKurs() }
+
+        binding.nilaiMatauang.setOnKeyListener { view, keyCode, _ -> handleKeyEvent(view, keyCode) }
     }
 
     private fun calculateKurs() {
@@ -37,14 +43,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         var cash = kursOptions * cost
-//        if (binding.roundUpSwitch.isChecked) {
-//            tip = kotlin.math.ceil(tip)
-//        }
-//      Hope we don't need em
 
         val indonesianLocale = Locale("in", "ID")
         val formattedResult = NumberFormat.getCurrencyInstance(indonesianLocale).format(cash)
         binding.kursResult.text = getString(R.string.cashAmount, formattedResult)
     }
 
+    private fun handleKeyEvent(view: View, keyCode:Int): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_ENTER){
+            val inputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+            return true
+        }
+        return false
+    }
 }
